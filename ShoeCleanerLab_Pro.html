@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoe Care Business Pro (Master V3.2 - Workshop Expert)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #334155; }
+        .nav-item { position: relative; transition: all 0.3s ease; }
+        .nav-item.active { color: #2563EB; font-weight: 700; }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -18px; left: 0; width: 100%; height: 3px; background-color: #2563EB; border-radius: 3px 3px 0 0; }
+        .chart-container { position: relative; height: 250px; width: 100%; }
+        .material-card { transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
+        .material-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .material-card.active { border-color: #2563EB; background-color: #EFF6FF; }
+        .timeline-step::before { content: ''; position: absolute; left: 24px; top: 40px; bottom: -20px; width: 2px; background: #E2E8F0; z-index: 0; }
+        .timeline-step:last-child::before { display: none; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .trouble-card { border-left-width: 4px; }
+        .ph-gradient { background: linear-gradient(90deg, #ef4444 0%, #f59e0b 40%, #22c55e 50%, #3b82f6 70%, #6366f1 100%); height: 8px; border-radius: 4px; width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen pb-20">
+
+    <!-- NAVIGATION -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 text-white w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-lg shadow-blue-200"><i class="fa-solid fa-flask"></i></div>
+                    <div><h1 class="font-bold text-xl text-slate-800 leading-tight">ShoeCare<span class="text-blue-600">Pro</span></h1><p class="text-xs text-slate-500 font-medium">Master V3.2 (Workshop Expert)</p></div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="switchTab('production')" id="nav-production" class="nav-item active text-slate-500 hover:text-slate-800 px-1 pt-1 text-sm font-medium"><i class="fa-solid fa-industry mr-2"></i>Lab Produksi</button>
+                    <button onclick="switchTab('workshop')" id="nav-workshop" class="nav-item text-slate-500 hover:text-slate-800 px-1 pt-1 text-sm font-medium"><i class="fa-solid fa-brush mr-2"></i>Workshop & Bahan</button>
+                    <button onclick="switchTab('education')" id="nav-education" class="nav-item text-slate-500 hover:text-slate-800 px-1 pt-1 text-sm font-medium"><i class="fa-solid fa-user-graduate mr-2"></i>Edukasi Customer</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: LAB PRODUKSI (UTUH) -->
+        <section id="tab-production" class="fade-in block space-y-8">
+            <div class="bg-blue-900 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden transition-all duration-500">
+                <div class="absolute top-0 right-0 opacity-10 text-9xl transform translate-x-10 -translate-y-10 rotate-12"><i class="fa-solid fa-flask-vial"></i></div>
+                <h2 class="text-3xl font-bold mb-2" id="header-title">Laboratorium Kimia</h2>
+                <p class="text-blue-200 max-w-2xl" id="header-desc">Sistem formulasi lengkap dengan instruksi mikro untuk hasil sempurna.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Control Panel -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-calculator text-blue-500 mr-2"></i>Kalkulator Bahan</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Pilih Formula</label>
+                                <select id="formulaType" onchange="updateAllContent()" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50 font-bold text-slate-700">
+                                    <optgroup label="Sabun Pencuci (Cleaner)">
+                                        <option value="deep">Deep Clean (Canvas/Midsole)</option>
+                                        <option value="premium">Premium Gentle (Suede/Leather)</option>
+                                        <option value="allpurpose">All Purpose (Universal)</option>
+                                    </optgroup>
+                                    <optgroup label="Spesialis (Treatment)">
+                                        <option value="whitener">✨ Upper Whitener (Pemutih)</option>
+                                        <option value="unyellowing">🔥 Sole Sauce (Unyellowing)</option>
+                                        <option value="neutralizer">🛡️ Neutralizer (pH Balancer)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            
+                            <!-- INFO MATERIAL -->
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm">
+                                <div class="mb-2">
+                                    <span class="text-xs font-bold text-green-600 uppercase">✅ Cocok Untuk:</span>
+                                    <p class="text-slate-700 leading-snug text-xs mt-1" id="material-safe">...</p>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-bold text-red-600 uppercase">⛔ Hindari / Bahaya:</span>
+                                    <p class="text-slate-700 leading-snug text-xs mt-1" id="material-unsafe">...</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Target Produksi (ml)</label>
+                                <div class="flex">
+                                    <input type="number" id="totalVolume" value="1000" step="100" oninput="updateAllContent()" class="w-full border border-slate-300 rounded-l-lg p-2.5 text-sm font-bold text-blue-700">
+                                    <span class="bg-slate-100 border border-l-0 border-slate-300 rounded-r-lg px-4 flex items-center text-slate-600 text-sm font-medium">ml</span>
+                                </div>
+                            </div>
+                            <div class="chart-container mt-6"><canvas id="formulaChart"></canvas></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                        <h3 class="font-bold text-amber-900 mb-3 text-sm flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i>APD Wajib</h3>
+                        <ul class="space-y-2 text-sm text-amber-900" id="apd-list"></ul>
+                    </div>
+                    <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200">
+                        <h3 class="font-bold text-indigo-900 mb-3 text-sm flex items-center"><i class="fa-solid fa-toolbox mr-2"></i>Alat Produksi Wajib</h3>
+                        <ul class="space-y-3 text-sm text-indigo-900" id="tools-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Recipe & SOP -->
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800">📋 Lembar Kerja Resep</h3>
+                            <div class="flex flex-col items-end">
+                                <span id="costEstimation" class="text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Estimasi HPP: Rp -</span>
+                                <span id="sellPriceSuggestion" class="text-xs text-slate-400 mt-1">Saran Jual 100ml: Rp -</span>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-700">
+                                    <tr>
+                                        <th class="p-3 rounded-l-lg">Bahan</th>
+                                        <th class="p-3">Wujud</th>
+                                        <th class="p-3">Fungsi</th>
+                                        <th class="p-3 text-right">Konsentrasi</th>
+                                        <th class="p-3 text-right text-blue-600 font-bold rounded-r-lg">Takaran</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recipeBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- INGREDIENT KNOWLEDGE -->
+                    <div class="bg-slate-100 p-6 rounded-xl border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-microscope text-purple-600"></i> Bedah Bahan Baku
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-4">Penjelasan detail bahan dalam formula <strong><span id="formula-name-display">...</span></strong>.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ingredient-knowledge-container"></div>
+                    </div>
+
+                    <!-- SHELF LIFE TABLE -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-boxes-stacked text-indigo-500"></i> Ringkasan Tabel Kadaluarsa (Gudang Bahan Baku)
+                        </h3>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-700 font-bold">
+                                    <tr>
+                                        <th class="p-3 border-b">Nama Bahan Baku</th>
+                                        <th class="p-3 border-b">Wujud</th>
+                                        <th class="p-3 border-b">Estimasi Expired</th>
+                                        <th class="p-3 border-b">Syarat Penyimpanan Gudang</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold">Texapone (SLES 70%)</td><td class="p-3 text-xs">Pasta</td><td class="p-3">2-3 Tahun</td><td class="p-3 text-slate-600">Wadah tertutup rapat (plastik), hindari air masuk.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold">CAPB (Amphitol)</td><td class="p-3 text-xs">Cair</td><td class="p-3">1-2 Tahun</td><td class="p-3 text-slate-600">Suhu ruang, hindari kontaminasi kotoran.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-red-600">H2O2 50% (Peroksida)</td><td class="p-3 text-xs">Cair</td><td class="p-3 text-red-600 font-bold">6-12 Bulan</td><td class="p-3 text-slate-600"><strong>Wajib Jerigen Hitam/Gelap</strong>, Sejuk, Jangan guncang.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold">Bibit Parfum (Oil)</td><td class="p-3 text-xs">Minyak</td><td class="p-3">2-3 Tahun</td><td class="p-3 text-slate-600">Botol Aluminium/Kaca gelap, hindari panas.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold">Glycerin</td><td class="p-3 text-xs">Kental</td><td class="p-3">2 Tahun</td><td class="p-3 text-slate-600">Sangat menyerap air, tutup super rapat.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold">Bahan Bubuk (Garam, EDTA, Citric)</td><td class="p-3 text-xs">Serbuk</td><td class="p-3">3-5 Tahun</td><td class="p-3 text-slate-600">Kering, tidak lembab (bisa menggumpal).</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- PACKAGING GUIDE -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-6">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-box-open text-blue-600"></i> Panduan Kemasan & Penyimpanan Bahan Baku
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-4">Wadah yang salah dapat merusak kualitas bahan kimia dan membahayakan keselamatan.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-100"><div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-bucket text-blue-500"></i><h4 class="font-bold text-slate-700 text-sm">Texapone (SLES)</h4></div><p class="text-xs text-slate-600 font-semibold mb-1">Wadah Ideal:</p><p class="text-xs text-slate-500 mb-2">Ember Plastik (Pail) / Toples Mulut Lebar.</p><p class="text-[10px] text-slate-400 italic">Alasan: Tekstur pasta sulit diambil dari botol leher sempit.</p></div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-100"><div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-skull-crossbones text-red-500"></i><h4 class="font-bold text-red-700 text-sm">H2O2 (Peroksida)</h4></div><p class="text-xs text-slate-600 font-semibold mb-1">Wadah Ideal:</p><p class="text-xs text-slate-500 mb-2">Jerigen Plastik HITAM/GELAP (Opaque).</p><p class="text-[10px] text-red-400 italic">Bahaya: Meledak/rusak jika kena cahaya matahari & panas.</p></div>
+                            <div class="bg-amber-50 p-4 rounded-lg border border-amber-100"><div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-flask text-amber-600"></i><h4 class="font-bold text-amber-800 text-sm">Bibit Parfum</h4></div><p class="text-xs text-slate-600 font-semibold mb-1">Wadah Ideal:</p><p class="text-xs text-slate-500 mb-2">Botol Kaca Cokelat atau Aluminium.</p><p class="text-[10px] text-amber-500 italic">Hindari botol plastik tipis (bisa penyok).</p></div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-100"><div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-bottle-water text-cyan-500"></i><h4 class="font-bold text-slate-700 text-sm">Cairan (CAPB/Glycerin)</h4></div><p class="text-xs text-slate-600 font-semibold mb-1">Wadah Ideal:</p><p class="text-xs text-slate-500 mb-2">Jerigen Plastik HDPE (Putih/Bening).</p><p class="text-[10px] text-slate-400 italic">Aman dan stabil di suhu ruang.</p></div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-100"><div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-cubes-stacked text-slate-500"></i><h4 class="font-bold text-slate-700 text-sm">Bubuk (Garam/EDTA)</h4></div><p class="text-xs text-slate-600 font-semibold mb-1">Wadah Ideal:</p><p class="text-xs text-slate-500 mb-2">Toples Kedap Udara + Silica Gel.</p><p class="text-[10px] text-slate-400 italic">Mencegah menggumpal (caking) karena lembab.</p></div>
+                             <div class="bg-slate-50 p-4 rounded-lg border border-slate-100"><div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-oil-can text-yellow-600"></i><h4 class="font-bold text-slate-700 text-sm">Polysorbate 20</h4></div><p class="text-xs text-slate-600 font-semibold mb-1">Wadah Ideal:</p><p class="text-xs text-slate-500 mb-2">Botol HDPE Tebal.</p><p class="text-[10px] text-slate-400 italic">Sifat minyak kental, butuh wadah kuat.</p></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-6">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-tag text-orange-500"></i> Ringkasan Tabel Kadaluarsa (Produk Jadi)
+                        </h3>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-700 font-bold">
+                                    <tr>
+                                        <th class="p-3 border-b">Nama Produk Jadi</th>
+                                        <th class="p-3 border-b">Masa Pakai (PAO)</th>
+                                        <th class="p-3 border-b">Syarat Penyimpanan Konsumen</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-blue-600">Deep Clean / Premium / All Purpose</td><td class="p-3">24 Bulan</td><td class="p-3 text-slate-600">Suhu Ruang, Hindari Matahari Langsung.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-orange-600">Sole Sauce & Whitener</td><td class="p-3 text-red-600 font-bold">3-6 Bulan</td><td class="p-3 text-slate-600"><strong>Wajib Gelap</strong>, Lebih awet di Kulkas.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-emerald-600">Neutralizer</td><td class="p-3">12 Bulan</td><td class="p-3 text-slate-600">Suhu Ruang.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MATRIKS REFERENSI -->
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200 mt-6">
+                        <h3 class="font-bold text-slate-800 mb-6 text-xl text-center">📊 Matriks Referensi: Manfaat & Kegunaan Formula</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left border-collapse">
+                                <thead class="bg-slate-800 text-white">
+                                    <tr>
+                                        <th class="p-4 rounded-tl-lg">Nama Formula</th>
+                                        <th class="p-4">Target Utama</th>
+                                        <th class="p-4">Fungsi & Manfaat Kunci</th>
+                                        <th class="p-4 rounded-tr-lg">Catatan Khusus</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    <tr class="hover:bg-slate-50"><td class="p-4 font-bold border-l-4 border-blue-500">Deep Clean</td><td class="p-4">Canvas, Karet, Midsole</td><td class="p-4">Daya angkat noda berat. Busa melimpah.</td><td class="p-4 text-xs text-red-600 bg-red-50 font-bold">JANGAN dipakai di Suede/Kulit!</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-4 font-bold border-l-4 border-cyan-500">Premium Gentle</td><td class="p-4">Suede, Nubuck, Kulit Asli</td><td class="p-4">Membersihkan tanpa merusak tekstur. Moisturizing.</td><td class="p-4 text-xs text-slate-500">Busa sedikit, fokus kelembutan.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-4 font-bold border-l-4 border-purple-500">All Purpose</td><td class="p-4">Semua Bahan (Aman)</td><td class="p-4">Keseimbangan daya bersih dan keamanan.</td><td class="p-4 text-xs text-slate-500">Pilihan terbaik untuk dijual botolan.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-4 font-bold border-l-4 border-orange-500">Sole Sauce</td><td class="p-4">Rubber Sole (Kuning)</td><td class="p-4">Memutihkan sol kuning oksidasi. Anti-netes.</td><td class="p-4 text-xs text-red-600 bg-red-50 font-bold">Butuh Sinar Matahari/UV!</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-4 font-bold border-l-4 border-yellow-400">Upper Whitener</td><td class="p-4">Canvas Putih</td><td class="p-4">Memutihkan kain kanvas kuning. Meresap.</td><td class="p-4 text-xs text-red-600 bg-red-50 font-bold">Wajib sarung tangan! Korosif.</td></tr>
+                                    <tr class="hover:bg-slate-50"><td class="p-4 font-bold border-l-4 border-emerald-500">Neutralizer</td><td class="p-4">Suede, Canvas, Finishing</td><td class="p-4">Softener Suede, Anti-Residu, Anti-Yellowing.</td><td class="p-4 text-xs text-emerald-700 bg-emerald-50 font-bold">Finishing wajib untuk hasil pro.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SOP -->
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 mt-6">
+                        <h3 class="font-bold text-slate-800 mb-8 flex items-center gap-2 text-xl border-b pb-4"><span class="bg-slate-800 text-white w-8 h-8 rounded flex items-center justify-center text-sm">SOP</span>Proses Pembuatan (<span id="sop-title-suffix" class="text-blue-600">Standard</span>)</h3>
+                        <div class="relative pl-4" id="sop-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QC & Troubleshooting -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-eye text-blue-500"></i> Standar Visual Akhir</h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100"><h4 class="text-xs font-bold text-slate-500 uppercase mb-1">Tekstur Target</h4><p class="text-sm font-semibold text-slate-800" id="visual-texture">...</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100"><h4 class="text-xs font-bold text-slate-500 uppercase mb-1">Warna & Kejernihan</h4><p class="text-sm font-semibold text-slate-800" id="visual-clarity">...</p></div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-wrench text-amber-500"></i> Troubleshooting Spesifik & Solusi Detail</h3>
+                    <div class="grid grid-cols-1 gap-4" id="trouble-container">
+                        <!-- JS Injected (Full Width for details) -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: WORKSHOP (UPDATED EXPERT) -->
+        <section id="tab-workshop" class="fade-in hidden space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-slate-800">Panduan Material & Perawatan</h2>
+                <p class="text-slate-500">Panduan teknis langkah demi langkah sesuai standar industri.</p>
+            </div>
+
+            <!-- Material Selector Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                <button onclick="selectMaterial('canvas')" class="material-card active p-4 rounded-xl bg-white text-center shadow-sm" id="btn-canvas">
+                    <div class="text-3xl mb-2 text-slate-700"><i class="fa-solid fa-shoe-prints"></i></div>
+                    <div class="text-sm font-bold text-slate-700">Canvas</div>
+                </button>
+                <button onclick="selectMaterial('mesh')" class="material-card p-4 rounded-xl bg-white text-center shadow-sm" id="btn-mesh">
+                    <div class="text-3xl mb-2 text-slate-700"><i class="fa-brands fa-gg"></i></div>
+                    <div class="text-sm font-bold text-slate-700">Mesh/Knit</div>
+                </button>
+                <button onclick="selectMaterial('suede')" class="material-card p-4 rounded-xl bg-white text-center shadow-sm" id="btn-suede">
+                    <div class="text-3xl mb-2 text-slate-700"><i class="fa-solid fa-cow"></i></div>
+                    <div class="text-sm font-bold text-slate-700">Suede</div>
+                </button>
+                <button onclick="selectMaterial('nubuck')" class="material-card p-4 rounded-xl bg-white text-center shadow-sm" id="btn-nubuck">
+                    <div class="text-3xl mb-2 text-slate-700"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="text-sm font-bold text-slate-700">Nubuck</div>
+                </button>
+                <button onclick="selectMaterial('leather')" class="material-card p-4 rounded-xl bg-white text-center shadow-sm" id="btn-leather">
+                    <div class="text-3xl mb-2 text-slate-700"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="text-sm font-bold text-slate-700">Leather</div>
+                </button>
+                <button onclick="selectMaterial('rubber')" class="material-card p-4 rounded-xl bg-white text-center shadow-sm" id="btn-rubber">
+                    <div class="text-3xl mb-2 text-slate-700"><i class="fa-solid fa-eraser"></i></div>
+                    <div class="text-sm font-bold text-slate-700">Rubber/Midsole</div>
+                </button>
+            </div>
+
+            <!-- Dynamic Guide Content -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3">
+                    
+                    <!-- Left: Tools & Soap -->
+                    <div class="p-8 bg-slate-50 border-r border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 text-lg" id="guide-title">Guide: Canvas</h3>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Sabun Rekomendasi</h4>
+                            <div class="flex items-center gap-2 text-blue-700 bg-blue-100 px-3 py-2 rounded-lg font-bold text-sm">
+                                <i class="fa-solid fa-flask"></i> <span id="guide-soap">Deep Clean Formula</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Alat Wajib & Pendukung</h4>
+                            <ul class="space-y-3" id="guide-tools">
+                                <!-- JS Populated -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Right: Step by Step -->
+                    <div class="col-span-2 p-8">
+                        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-600"></i> Prosedur Pencucian (Detail Step-by-Step)
+                        </h3>
+                        <div class="space-y-6" id="guide-steps">
+                            <!-- JS Populated -->
+                        </div>
+
+                        <!-- Pro Tip Warning -->
+                        <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg flex gap-3">
+                            <div class="text-amber-600 text-xl"><i class="fa-solid fa-lightbulb"></i></div>
+                            <div>
+                                <h4 class="font-bold text-amber-800 text-sm">Catatan Pro (Expert Tips)</h4>
+                                <p class="text-sm text-amber-700 mt-1 leading-relaxed" id="guide-tip">...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: EDUKASI -->
+        <section id="tab-education" class="fade-in hidden space-y-8">
+            <div class="text-center mb-8"><h2 class="text-2xl font-bold text-slate-800">Edukasi Pelanggan</h2><p class="text-slate-500">Materi ini bisa Anda jelaskan atau kirimkan ke pelanggan agar sepatu mereka awet.</p></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition"><div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-box-archive"></i></div><h3 class="font-bold text-lg text-slate-800 mb-2">Cara Penyimpanan</h3><ul class="space-y-2 text-sm text-slate-600"><li><i class="fa-solid fa-check text-green-500 mr-2"></i><strong>Sirkulasi:</strong> Jangan simpan di kotak tertutup rapat dalam jangka lama.</li><li><i class="fa-solid fa-check text-green-500 mr-2"></i><strong>Silica Gel:</strong> Wajib ada untuk menyerap lembab.</li><li><i class="fa-solid fa-check text-green-500 mr-2"></i><strong>Shoe Tree:</strong> Gunakan penyangga sepatu.</li></ul></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition"><div class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-sun"></i></div><h3 class="font-bold text-lg text-slate-800 mb-2">Kenapa Sepatu Kuning?</h3><p class="text-sm text-slate-600 mb-3">Penyebab utama Yellowing:</p><ul class="space-y-2 text-sm text-slate-600"><li><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i><strong>Oxidation:</strong> Karet bereaksi dengan udara.</li><li><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i><strong>Residu Kimia:</strong> Sisa sabun deterjen pakaian yang tidak bersih.</li><li><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i><strong>Jemur Matahari:</strong> Jangan jemur kena matahari langsung!</li></ul></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition"><div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-umbrella"></i></div><h3 class="font-bold text-lg text-slate-800 mb-2">Proteksi Tambahan</h3><p class="text-sm text-slate-600">Tawarkan <strong>Water Repellent Spray</strong>. Melapisi serat kain (Canvas/Suede) seperti daun talas. Bertahan 2-3 minggu.</p></div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition"><div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-spa"></i></div><h3 class="font-bold text-lg text-slate-800 mb-2">Perawatan Kulit</h3><p class="text-sm text-slate-600">Kulit asli wajib diberi <strong>Leather Balm / Mink Oil</strong> sebulan sekali agar tidak pecah (cracking).</p></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA CENTER: UPDATED WITH REAL COSTS (V2.11 Logic) ---
+        const formulaData = {
+            deep: {
+                title: "Deep Clean (Canvas/Rubber)",
+                baseCost: 17.1,
+                materials: {
+                    safe: "Canvas, Denim, Rubber (Midsole/Outsole), Polyester, Mesh (Hati-hati).",
+                    unsafe: "Suede, Nubuck, Genuine Leather, Faux Leather (Resiko kering/pecah)."
+                },
+                ingredients: [
+                    { name: "Air (Aquades)", pct: 78.7, form: "Cair", note: "Pelarut Murni" },
+                    { name: "SLES 70%", pct: 12, form: "Gel/Pasta", note: "Pembersih Utama (Kuat)" },
+                    { name: "CAPB", pct: 4, form: "Cair", note: "Booster Busa" },
+                    { name: "Garam (NaCl)", pct: 3, form: "Bubuk", note: "Pengental Utama" },
+                    { name: "Polysorbate 20", pct: 1.0, form: "Cair", note: "Pelarut Parfum" },
+                    { name: "Bibit Parfum", pct: 1, form: "Cair Minyak", note: "Pewangi" },
+                    { name: "DMDM Hydantoin", pct: 0.2, form: "Cair", note: "Pengawet (2 Thn)" },
+                    { name: "EDTA", pct: 0.1, form: "Bubuk", note: "Anti-Bakteri" }
+                ],
+                knowledge: [
+                    { name: "SLES 70% (12%)", desc: "Konsentrasi tinggi untuk daya angkat noda berat (Heavy Duty). Efektif untuk lumpur dan noda jalanan pada sol karet." },
+                    { name: "Garam (NaCl)", desc: "Agen Viscosity (Pengental). Mengubah cairan sabun menjadi gel agar mudah dituang dan hemat pemakaian." },
+                    { name: "CAPB", desc: "Co-surfactant untuk menyeimbangkan SLES agar tidak terlalu iritatif di kulit tangan dan menambah volume busa." },
+                    { name: "EDTA", desc: "Chelating agent. Mengikat logam dalam air agar sabun bekerja maksimal dan tidak tengik." }
+                ],
+                colors: ['#94a3b8', '#3b82f6', '#60a5fa', '#fbbf24', '#06b6d4', '#a78bfa', '#be123c', '#ef4444'],
+                apd: ["Kacamata Pelindung (SLES 12% Perih)", "Sarung Tangan Nitril (Wajib)", "Masker (Debu EDTA)"],
+                tools: ["Timbangan Digital (Akurasi 1gr)", "Wadah Besar (Kapasitas 2x Volume)", "Pengaduk Kayu/Plastik Kuat", "Gelas untuk Larutan Garam", "Kertas Lakmus / pH Meter"],
+                sop: [
+                    { title: "Sterilisasi Alat & Persiapan", desc: "1. Cuci bersih semua wadah dan pengaduk.\n2. Semprot dengan Alkohol 70% dan lap hingga kering.\n3. Timbang semua bahan ke wadah kecil terpisah.\n4. Larutkan Citric Acid dan Soda Kue di gelas kecil (untuk stok koreksi pH)." },
+                    { title: "Fase Air (Water Phase)", desc: "1. Masukkan total Aquades ke wadah utama.\n2. Masukkan bubuk EDTA.\n3. Aduk perlahan ±3 menit sampai larut total dan air kembali jernih." },
+                    { title: "Pelarutan SLES", desc: "1. Masukkan SLES 70% (Gel) ke dalam air.\n2. TEKNIK: Aduk memutar pelan (jangan dikocok) atau diamkan (rendam) selama 2-4 jam agar larut sendiri tanpa busa.\n3. Pastikan tidak ada gumpalan gel di dasar." },
+                    { title: "Premix Wewangian", desc: "1. Siapkan gelas kecil.\n2. Campur: Parfum + Polysorbate 20 + DMDM Hydantoin.\n3. Aduk kuat sampai cairan menyatu (emulsi).\n4. Tuang campuran ini ke wadah utama." },
+                    { title: "Booster Busa (CAPB)", desc: "1. Masukkan CAPB (Betaine) ke wadah utama.\n2. Aduk pelan hingga rata.\n3. Cairan akan mulai terasa sedikit lebih berat." },
+                    { title: "Kontrol pH (Wajib)", desc: "1. Cek dengan pH meter.\n2. Target: pH 7-8.\n3. Jika >8: Teteskan larutan Citric Acid.\n4. Jika <6: Teteskan larutan Soda Kue.\n5. Aduk dan cek lagi." },
+                    { title: "Pengentalan (Thickening)", desc: "1. Siapkan larutan Garam jenuh (Garam + Air hangat).\n2. Tuang ke wadah utama SEDIKIT DEMI SEDIKIT sambil diaduk.\n3. Adonan akan berubah drastis menjadi Gel.\n4. STOP menuang jika sudah kental." },
+                    { title: "Resting", desc: "1. Tutup wadah rapat.\n2. Diamkan 24 jam di tempat teduh agar gelembung naik dan sabun jadi bening." }
+                ],
+                visual: { tex: "Sangat Kental (Gel-like). Seperti sabun cuci piring kental. Mengalir lambat.", clar: "Bening Kristal (Jika tanpa pewarna). Tidak ada kabut." },
+                getTrouble: function(vol) {
+                    return [
+                        { title: "Terlalu Encer (Oversalt)", cause: "Terlalu banyak menuang garam.", sol: `Buat 'Adonan Penyelamat' (${Math.round(vol * 0.2)}ml air + SLES + CAPB tanpa garam). Tuang bertahap.` },
+                        { title: "Sabun Keruh", cause: "Bibit parfum tidak larut.", sol: `Tambahkan Polysorbate 20 (${Math.round(vol * 0.005)} - ${Math.round(vol * 0.01)} ml). Aduk pelan.` }
+                    ];
+                }
+            },
+            premium: {
+                title: "Premium Gentle (Suede)",
+                baseCost: 15.9,
+                materials: {
+                    safe: "Suede, Nubuck, Genuine Leather, Faux Leather, Knit (Rajut Halus).",
+                    unsafe: "Tidak ada (Aman untuk semua), tapi boros biaya jika dipakai untuk midsole karet kotor."
+                },
+                ingredients: [
+                    { name: "Air (Aquades)", pct: 84.7, form: "Cair", note: "Pelarut" },
+                    { name: "SLES 70%", pct: 5, form: "Gel/Pasta", note: "Pembersih Lembut" },
+                    { name: "CAPB", pct: 6, form: "Cair", note: "Booster & Kental" },
+                    { name: "Glycerin", pct: 2, form: "Cair Kental", note: "Pelembab (Wajib)" },
+                    { name: "Polysorbate 20", pct: 1.0, form: "Cair", note: "Pelarut Parfum" },
+                    { name: "Bibit Parfum", pct: 1, form: "Cair Minyak", note: "Pewangi" },
+                    { name: "DMDM Hydantoin", pct: 0.2, form: "Cair", note: "Pengawet" },
+                    { name: "EDTA", pct: 0.1, form: "Bubuk", note: "Anti-Bakteri" }
+                ],
+                knowledge: [
+                    { name: "SLES (5%)", desc: "Low Concentration. Didesain hanya untuk mengangkat debu permukaan tanpa menghilangkan minyak alami kulit (Low Stripping)." },
+                    { name: "Glycerin", desc: "Humectant (Pelembab). Menjaga kelembaban kulit/suede agar tetap lentur dan tidak 'mati' (kaku) setelah kering." },
+                    { name: "CAPB (Tinggi)", desc: "Disini CAPB berfungsi ganda: sebagai pembersih utama yang lembut dan agen pengental alami (tanpa garam)." },
+                    { name: "Tanpa Garam", desc: "Formula ini menghindari garam karena residu garam (putih-putih) bisa tertinggal di suede dan merusak tekstur." }
+                ],
+                colors: ['#94a3b8', '#818cf8', '#a78bfa', '#34d399', '#06b6d4', '#f472b6', '#be123c', '#ef4444'],
+                apd: ["Kacamata Pelindung", "Sarung Tangan Latex (Steril)", "Masker"],
+                tools: ["Timbangan Presisi (0.1gr) - Penting", "Gelas Ukur Kaca", "Pengaduk Stainless", "pH Meter Digital (Wajib Akurat)"],
+                sop: [
+                    { title: "Sterilisasi Alat", desc: "1. Semprot Alkohol 70% ke semua alat dan lap kering. Formula Premium harus sangat higienis karena mengandung pelembab yang disukai bakteri." },
+                    { title: "Fase Air (Water Phase)", desc: "1. Larutkan EDTA ke dalam Aquades.\n2. Aduk sampai air jernih total dan tidak ada serbuk tersisa." },
+                    { title: "Fase Aktif Lembut", desc: "1. Masukkan SLES 5%.\n2. Aduk pelan. Karena jumlahnya sedikit, SLES akan cepat larut. Pastikan tidak ada gumpalan." },
+                    { title: "Moisturizer (PENTING)", desc: "1. Masukkan GLYCERIN.\n2. Aduk rata hingga menyatu dengan air. Ini adalah langkah kunci agar sabun aman untuk kulit/suede." },
+                    { title: "Premix Emulsi", desc: "1. Di wadah terpisah: Campur Parfum + Polysorbate 20 + DMDM.\n2. Aduk rata sampai menyatu sempurna.\n3. Tuang perlahan ke wadah utama sambil diaduk." },
+                    { title: "Penebalan Alami", desc: "1. Masukkan CAPB (6%).\n2. Aduk rata.\n3. Adonan akan sedikit mengental secara alami karena reaksi CAPB. Jangan berharap sekental Deep Clean, ini normal." },
+                    { title: "Quality Control (pH Kritis)", desc: "1. Gunakan pH Meter. Wajib pH 7.0 (Netral).\n2. Suede sangat sensitif, jika pH > 8 (Basa) teksturnya bisa rusak.\n3. Jika terlalu basa, turunkan dengan larutan Citric Acid sangat sedikit." },
+                    { title: "Finishing (TANPA GARAM)", desc: "1. Formula ini TIDAK PERLU GARAM.\n2. Tekstur target adalah cair agak kental (seperti sirup marjan atau minyak goreng).\n3. Tekstur ini ideal agar sabun mudah masuk ke dalam botol Pump Foam dan menghasilkan busa mikro." }
+                ],
+                visual: { tex: "Cair kental (Flowing). Seperti sirup atau minyak goreng.", clar: "Crystal Clear & Berkilau." },
+                getTrouble: function(vol) {
+                    return [
+                        { title: "Terlalu Kental (Gel)", cause: "Tidak sengaja memasukkan garam/CAPB berlebih.", sol: `Tambahkan Aquades sedikit demi sedikit (${Math.round(vol * 0.05)} - ${Math.round(vol * 0.1)} ml).` },
+                        { title: "Keruh", cause: "Kurang emulsi.", sol: `Tambahkan Polysorbate 20 (${Math.round(vol * 0.005)} ml). Aduk konstan 10 menit.` }
+                    ];
+                }
+            },
+            allpurpose: {
+                title: "All Purpose (Hybrid)",
+                baseCost: 17.4,
+                materials: {
+                    safe: "Semua Jenis Material (Canvas, Mesh, Leather, Suede*). *Suede butuh teknik sikat minim air.",
+                    unsafe: "Hampir tidak ada (Universal Safe)."
+                },
+                ingredients: [
+                    { name: "Air (Aquades)", pct: 80.5, form: "Cair", note: "Pelarut" },
+                    { name: "SLES 70%", pct: 9.0, form: "Gel/Pasta", note: "Medium Cleaning" },
+                    { name: "CAPB", pct: 6.0, form: "Cair", note: "Extra Busa" },
+                    { name: "Glycerin", pct: 2.0, form: "Cair Kental", note: "Pelembab Wajib" },
+                    { name: "Polysorbate 20", pct: 1.0, form: "Cair", note: "Pelarut Parfum" },
+                    { name: "Bibit Parfum", pct: 1.0, form: "Cair Minyak", note: "Pewangi" },
+                    { name: "DMDM Hydantoin", pct: 0.2, form: "Cair", note: "Pengawet" },
+                    { name: "EDTA-2Na", pct: 0.1, form: "Bubuk", note: "Anti-Bakteri" },
+                    { name: "Garam (NaCl)", pct: 0.2, form: "Bubuk", note: "Pengental Dikit" }
+                ],
+                knowledge: [
+                    { name: "SLES (9%)", desc: "Jalan tengah (Hybrid). Cukup kuat untuk membersihkan midsole, tapi tidak terlalu keras untuk merusak kulit sintetis." },
+                    { name: "Glycerin", desc: "Safety net (Jaring pengaman). Ditambahkan untuk memastikan aman jika pengguna mencuci bahan kulit/suede." },
+                    { name: "Garam (Sedikit)", desc: "Hanya untuk memberi 'body' agar tidak terlalu cair seperti air, memudahkan penuangan ke sikat." },
+                    { name: "All-Rounder", desc: "Didesain untuk satu sabun segala kebutuhan, menyeimbangkan daya bersih dan keamanan." }
+                ],
+                colors: ['#cbd5e1', '#8b5cf6', '#a78bfa', '#f59e0b', '#6366f1', '#ec4899', '#ef4444', '#10b981', '#d946ef'],
+                apd: ["Kacamata Pelindung", "Sarung Tangan Nitril", "Masker"],
+                tools: ["Timbangan Digital", "Wadah Mixing Standard", "Pengaduk", "Kertas Lakmus", "Gelas kecil Larutan Garam"],
+                sop: [
+                    { title: "Sterilisasi & Persiapan", desc: "1. Bersihkan alat dengan alkohol.\n2. Siapkan larutan Garam Encer (5gr garam + 50ml air) di gelas terpisah untuk kontrol kekentalan nanti." },
+                    { title: "Fase Air", desc: "1. Larutkan EDTA dengan Aquades hingga jernih total." },
+                    { title: "Fase Aktif Medium", desc: "1. Masukkan SLES 9%.\n2. Aduk pelan atau rendam sampai larut sempurna. Konsentrasi ini cukup aman untuk kulit tapi cukup kuat berbusa." },
+                    { title: "Moisturizer (Wajib)", desc: "1. Masukkan Glycerin.\n2. Karena ini sabun 'All Purpose', Glycerin wajib ada sebagai pengaman (safety net) jika sabun mengenai bahan kulit." },
+                    { title: "Premix Emulsi", desc: "1. Campur Parfum + Polysorbate + DMDM di wadah lain hingga rata.\n2. Tuang ke adonan utama." },
+                    { title: "Booster Busa", desc: "1. Masukkan CAPB.\n2. Aduk rata. Busa akan mulai terbentuk stabil." },
+                    { title: "Cek pH (Netralisasi)", desc: "1. Target pH 7 (Netral).\n2. Sesuaikan dengan Sitrun (jika Basa) atau Soda Kue (jika Asam).\n3. pH 7 aman untuk semua bahan." },
+                    { title: "Pengentalan Ringan", desc: "1. Masukkan larutan Garam SEDIKIT SAJA (Tetes demi tetes).\n2. Target kekentalan seperti sabun cuci tangan cair (Hand Soap).\n3. Jangan dibuat sekental Deep Clean agar mudah dibilas dan tidak meninggalkan residu." }
+                ],
+                visual: { tex: "Viskositas sedang. Seperti sabun cuci tangan cair (Hand Soap).", clar: "Bening Transparan." },
+                getTrouble: function(vol) {
+                    return [
+                        { title: "Kurang Busa", cause: "Air sadah atau kurang CAPB.", sol: `Tambah takaran CAPB sebanyak ${Math.round(vol * 0.02)}ml di batch selanjutnya.` },
+                        { title: "Memisah", cause: "pH tidak stabil.", sol: "Cek pH, netralkan, aduk pelan hingga dasar." }
+                    ];
+                }
+            },
+            unyellowing: {
+                title: "Unyellowing Sole Sauce (Super Potent)",
+                baseCost: 23.4,
+                materials: {
+                    safe: "✅ HANYA untuk Rubber Sole / Midsole yang Menguning (Icy Sole / White Sole).",
+                    unsafe: "⛔ DILARANG KERAS untuk Upper (Canvas/Suede/Leather), Cat Sepatu, dan Lem."
+                },
+                ingredients: [
+                    { name: "H2O2 50%", pct: 80.0, form: "Cair", note: "Agen Oksidasi Kuat (Pemutih Utama)" },
+                    { name: "Aquades", pct: 12.0, form: "Cair", note: "Pelarut" },
+                    { name: "Glycerin", pct: 5.0, form: "Cair Kental", note: "Retarder (Pencegah Kering)" },
+                    { name: "Xanthan Gum", pct: 3.0, form: "Bubuk Halus", note: "Pengental (Agar jadi Pasta)" }
+                ],
+                knowledge: [
+                    { name: "H2O2 High Conc", desc: "Hidrogen Peroksida dosis tinggi (50% teknis). Memutihkan karet kuning oksidasi dengan sangat cepat saat terkena sinar UV/Matahari." },
+                    { name: "Xanthan Gum", desc: "Pengental tahan asam. Mengubah cairan H2O2 menjadi Gel/Pasta agar tidak menetes (anti-drip) ke bagian upper saat dioleskan." },
+                    { name: "Glycerin", desc: "Berfungsi menahan kelembaban agar 'Sauce' tidak cepat kering saat dijemur di bawah matahari terik, sehingga proses reaksi kimia berlangsung lebih lama." },
+                    { name: "Tanpa SLES", desc: "Formula ini bukan sabun, tapi chemical treatment. Tidak butuh busa." }
+                ],
+                colors: ['#eab308', '#ca8a04', '#fefce8', '#f59e0b'],
+                apd: ["SARUNG TANGAN KARET TEBAL (WAJIB)", "Kacamata Pelindung (Wajib)", "Masker (Uap H2O2 tajam)"],
+                tools: ["Wadah Plastik Tahan Kimia", "Pengaduk Plastik", "Kuas Oles (Nylon)", "Plastic Wrap (Untuk proses unyellowing)", "Sinar Matahari / UV Lamp"],
+                sop: [
+                    { title: "Safety Protocol (Bahaya)", desc: "1. Pakai APD lengkap. H2O2 50% membakar kulit seketika (kulit jadi putih & gatal).\n2. Lakukan di area berventilasi baik." },
+                    { title: "Pembuatan 'Slurry' (Pengental)", desc: "1. Siapkan wadah kecil.\n2. Campurkan Glycerin + Xanthan Gum.\n3. Aduk rata sampai menjadi pasta keruh. Langkah ini PENTING agar Xanthan Gum tidak menggumpal saat kena air." },
+                    { title: "Pencampuran H2O2", desc: "1. Di wadah utama, siapkan H2O2 50% + Aquades.\n2. Masukkan adonan 'Slurry' tadi ke dalam H2O2.\n3. Aduk CEPAT dan KUAT sampai larut dan mengental menjadi Gel Bening/Agak Keruh." },
+                    { title: "Penyimpanan Khusus", desc: "1. Simpan di wadah toples plastik gelap/opaque (Tidak tembus cahaya).\n2. H2O2 akan terurai jadi air jika kena matahari. Efektivitas hilang." }
+                ],
+                visual: { tex: "Gel Kental / Pasta (Seperti Lem Wallpaper). Tidak menetes saat kuas diangkat.", clar: "Agak Keruh (Translucent) karena Xanthan Gum." },
+                getTrouble: function(vol) {
+                    return [
+                        { title: "Menggumpal", cause: "Xanthan Gum langsung kena air.", sol: "Wajib campur Glycerin dulu (Slurry) atau gunakan Hand Blender." },
+                        { title: "Menjadi Cair", cause: "Terkontaminasi atau panas.", sol: "Buat baru. Simpan di kulkas." }
+                    ];
+                }
+            },
+            whitener: {
+                title: "Upper Whitener (Canvas Only)",
+                baseCost: 9.6,
+                materials: {
+                    safe: "✅ HANYA Canvas Putih, Mesh Putih, Karet Putih (Midsole).",
+                    unsafe: "⛔ DILARANG untuk Sepatu Berwarna, Suede, Leather (Luntur/Rusak Parah)."
+                },
+                ingredients: [
+                    { name: "Air (Aquades)", pct: 90.0, form: "Cair", note: "Pelarut Murni" },
+                    { name: "H2O2 (50%)", pct: 6.0, form: "Cair", note: "Agen Oksidasi (Pemutih)" },
+                    { name: "SLES 70%", pct: 4.0, form: "Gel/Pasta", note: "Pembersih Penetrasi" }
+                ],
+                knowledge: [
+                    { name: "H2O2 (Diluted)", desc: "Konsentrasi rendah (3% efektif) untuk memutihkan kain tanpa merusak serat terlalu parah." },
+                    { name: "SLES", desc: "Wetting Agent. Menurunkan tegangan permukaan air agar cairan pemutih bisa meresap cepat ke dalam serat kain kanvas yang rapat." },
+                    { name: "Aquades", desc: "Media pelarut stabil. Jangan gunakan air keran karena logam dalam air keran bisa memicu reaksi H2O2 meledak/berbusa liar." }
+                ],
+                colors: ['#cbd5e1', '#fcd34d', '#3b82f6'],
+                apd: ["SARUNG TANGAN KARET", "Kacamata", "Masker"],
+                tools: ["Wadah Plastik", "Pengaduk Plastik", "Botol Spray Gelap/Opaque"],
+                sop: [
+                    { title: "Persiapan Air", desc: "1. Siapkan Aquades di wadah plastik.\n2. Jangan gunakan wadah logam!" },
+                    { title: "Pengenceran H2O2", desc: "1. Tuang H2O2 50% pelan-pelan ke dalam air.\n2. Ingat: Air dulu, baru Zat Kimia." },
+                    { title: "Penambahan Surfaktan", desc: "1. Masukkan SLES sedikit demi sedikit.\n2. Aduk pelan sampai larut.\n3. SLES membantu cairan meresap." },
+                    { title: "Penyimpanan", desc: "1. Simpan di botol gelap.\n2. H2O2 rusak kena matahari." }
+                ],
+                visual: { tex: "Cair seperti air biasa. Sedikit berbusa jika dikocok.", clar: "Bening." },
+                getTrouble: function(vol) {
+                    return [
+                        { title: "Botol Gembung", cause: "Gas H2O2 keluar.", sol: "Buka tutup botol berkala. Jangan isi penuh." },
+                        { title: "Tidak Memutihkan", cause: "H2O2 basi.", sol: "Ganti bahan H2O2 baru." }
+                    ];
+                }
+            },
+            neutralizer: {
+                title: "pH Balancer & Conditioner",
+                baseCost: 11.4,
+                materials: {
+                    safe: "✅ Wajib untuk Suede (Softener), Canvas Putih (Anti-Yellowing), Canvas Hitam (Anti-Residu).",
+                    unsafe: "Tidak ada (Aman untuk semua bahan)."
+                },
+                ingredients: [
+                    { name: "Air (Aquades)", pct: 95.0, form: "Cair", note: "Pelarut" },
+                    { name: "Citric Acid", pct: 5.0, form: "Bubuk", note: "Agen Asam (Acid)" }
+                ],
+                knowledge: [
+                    { name: "Citric Acid", desc: "Menetralkan pH Basa (Sabun) dan pH Oksidator (Pemutih). Mencegah yellowing dan melembutkan serat kain/suede." }
+                ],
+                colors: ['#cbd5e1', '#facc15'],
+                apd: ["Sarung Tangan", "Kacamata"],
+                tools: ["Wadah Mixing", "Pengaduk", "Botol Spray"],
+                sop: [
+                    { title: "Pelarutan", desc: "1. Masukkan Air (Aquades) ke wadah." },
+                    { title: "Pencampuran Acid", desc: "1. Masukkan bubuk Citric Acid.\n2. Aduk hingga larut sempurna (bening).\n3. Pastikan tidak ada kristal tersisa." },
+                    { title: "Pengemasan", desc: "1. Masukkan ke botol spray.\n2. Siap digunakan untuk tahap Finishing." }
+                ],
+                visual: { tex: "Cair seperti air.", clar: "Bening." },
+                getTrouble: function(vol) {
+                    return [
+                        { title: "Endapan Putih", cause: "Belum larut.", sol: "Aduk lagi atau pakai air hangat." },
+                        { title: "Bau", cause: "Salah pakai Cuka.", sol: "Ganti dengan Citric Acid." }
+                    ];
+                }
+            }
+        };
+
+        let myChart = null;
+
+        function updateAllContent() {
+            const key = document.getElementById('formulaType').value;
+            const volume = parseFloat(document.getElementById('totalVolume').value) || 0;
+            const data = formulaData[key];
+
+            document.getElementById('sop-title-suffix').innerText = data.title;
+            document.getElementById('formula-name-display').innerText = data.title;
+            
+            document.getElementById('material-safe').innerText = data.materials.safe;
+            document.getElementById('material-unsafe').innerText = data.materials.unsafe;
+
+            document.getElementById('apd-list').innerHTML = data.apd.map(item => `<li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-600"></i> ${item}</li>`).join('');
+            document.getElementById('tools-list').innerHTML = data.tools.map(item => `<li class="flex items-start gap-2"><i class="fa-solid fa-toolbox text-indigo-500 mt-1"></i> <span>${item}</span></li>`).join('');
+            document.getElementById('sop-container').innerHTML = data.sop.map((step, index) => `<div class="timeline-step relative pl-14 pb-8"><div class="absolute left-0 top-0 bg-blue-100 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center font-bold border-4 border-white shadow-sm z-10 text-lg">${index + 1}</div><h4 class="font-bold text-slate-800 text-lg">${step.title}</h4><p class="text-slate-600 text-sm mt-1 leading-relaxed whitespace-pre-line">${step.desc}</p></div>`).join('');
+            document.getElementById('visual-texture').innerText = data.visual.tex;
+            document.getElementById('visual-clarity').innerText = data.visual.clar;
+            
+            // DYNAMIC TROUBLESHOOTING
+            const troubleItems = data.getTrouble ? data.getTrouble(volume) : data.trouble;
+            document.getElementById('trouble-container').innerHTML = troubleItems.map(item => `<div class="trouble-card bg-slate-50 border-slate-400 p-3 rounded-lg border-l-4"><h4 class="font-bold text-slate-900 text-sm mb-1">${item.title}</h4><p class="text-xs text-slate-600"><strong>Sebab:</strong> ${item.cause}</p><p class="text-xs text-blue-600 mt-1 pt-1 border-t border-slate-200"><strong>Solusi:</strong> ${item.sol}</p></div>`).join('');
+            
+            document.getElementById('ingredient-knowledge-container').innerHTML = data.knowledge.map(item => `
+                <div class="bg-white p-3 rounded border border-slate-200 shadow-sm">
+                    <h5 class="font-bold text-slate-800 text-sm mb-1">${item.name}</h5>
+                    <p class="text-xs text-slate-600 leading-snug">${item.desc}</p>
+                </div>
+            `).join('');
+
+            const tbody = document.getElementById('recipeBody');
+            tbody.innerHTML = '';
+            let chartLabels = [], chartData = [];
+            data.ingredients.forEach(ing => {
+                const amount = (volume * ing.pct) / 100;
+                chartLabels.push(ing.name); chartData.push(amount);
+                tbody.innerHTML += `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+                    <td class="p-3 font-medium text-slate-700">${ing.name}</td>
+                    <td class="p-3 text-xs font-semibold text-slate-500"><span class="px-2 py-1 rounded bg-slate-100">${ing.form}</span></td>
+                    <td class="p-3 text-xs text-slate-500 italic">${ing.note}</td>
+                    <td class="p-3 text-right text-slate-500">${ing.pct}%</td>
+                    <td class="p-3 text-right font-bold text-blue-600">${amount.toFixed(1)} ${ing.pct > 50 ? 'ml' : 'gr'}</td>
+                </tr>`;
+            });
+
+            // REAL COSTING
+            const hpp = volume * data.baseCost;
+            document.getElementById('costEstimation').innerText = `Estimasi HPP: Rp ${hpp.toLocaleString('id-ID')}`;
+            // Suggested Selling Price (HPP x 4 for retail safety)
+            const sellPrice = (hpp / (volume/100)) * 4; 
+            document.getElementById('sellPriceSuggestion').innerText = `Saran Jual 100ml: Rp ${Math.ceil(sellPrice/1000)*1000}`; // Rounded
+
+            const ctx = document.getElementById('formulaChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, { type: 'doughnut', data: { labels: chartLabels, datasets: [{ data: chartData, backgroundColor: data.colors, borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } }, cutout: '70%' } });
+        }
+
+        function switchTab(tabId) {
+            ['production', 'workshop', 'education'].forEach(id => { document.getElementById(`tab-${id}`).classList.add('hidden'); document.getElementById(`nav-${id}`).classList.remove('active', 'text-slate-800'); document.getElementById(`nav-${id}`).classList.add('text-slate-500'); });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden'); document.getElementById(`nav-${tabId}`).classList.add('active', 'text-slate-800'); document.getElementById(`nav-${tabId}`).classList.remove('text-slate-500');
+            if(tabId === 'production' && myChart) myChart.resize();
+        }
+
+        // WORKSHOP DATA: EXPERT DETAIL
+        const guideData = {
+            canvas: {
+                title: "Material: Canvas & Denim",
+                soap: "Deep Clean (atau All Purpose)",
+                tips: "Musuh utama Canvas putih adalah 'Yellowing' (residu sabun). Kunci sukses: BILAS MINIMAL tapi BERSIH & WRAPPING TISU TEBAL.",
+                tools: [
+                    "Hard Brush (Sikat Nylon Keras - Untuk Midsole/Outsole)",
+                    "Premium Brush (Sikat Bulu Kuda - Untuk Upper Canvas)",
+                    "Microfiber Towel (Untuk menyerap busa)",
+                    "Shoe Tree (Penyangga bentuk sepatu)",
+                    "Tisu Makan Putih Polos (Untuk Wrapping)"
+                ],
+                steps: [
+                    "1. PREP: Lepas tali sepatu dan insole. Rendam tali terpisah dengan sabun.",
+                    "2. DRY CLEAN: Sikat seluruh sepatu dalam keadaan kering untuk merontokkan debu/tanah. Jangan basahi sepatu berdebu (jadi lumpur).",
+                    "3. FORM: Pasang Shoe Tree agar bentuk sepatu kokoh saat disikat.",
+                    "4. SOLE: Basahi Hard Brush, celup ke sabun. Sikat Midsole & Outsole (bawah) sampai bersih. Bilas air sedikit.",
+                    "5. UPPER: Basahi Premium Brush, celup sedikit sabun, KIBASKAN airnya (lembab). Sikat Upper Canvas dengan gerakan MEMUTAR (Circular) untuk mengangkat kotoran dari serat.",
+                    "6. WIPE: Langsung seka busa kotor dengan Microfiber (tekan-tekan). Jangan dibilas air keran berlebihan (banjir).",
+                    "7. REPEAT: Ulangi per bagian sampai bersih.",
+                    "8. NEULTRALIZER (Opsional): Semprot Neutralizer merata untuk cegah residu.",
+                    "9. WRAPPING: Bungkus seluruh sepatu basah dengan tisu makan berlapis-lapis hingga menempel ketat (seperti masker).",
+                    "10. DRYING: Jemur di tempat teduh (angina-angin). Jangan kena matahari langsung."
+                ]
+            },
+            mesh: {
+                title: "Material: Mesh & Knit (Rajut)",
+                soap: "All Purpose / Deep Clean (Diluted)",
+                tips: "Bahan rajut sangat rapuh & menyerap air. Jangan gunakan sikat keras (Nylon) di upper karena benang bisa brudul (fraying). Jangan digosok saat pengeringan.",
+                tools: [
+                    "Soft Brush / Premium Brush (Wajib Bulu Lembut)",
+                    "Shoe Tree (Sangat Wajib - Mesh lembek tanpa ini)",
+                    "Microfiber Towel (Daya serap tinggi)"
+                ],
+                steps: [
+                    "1. FORM: Pasang Shoe Tree. Ini wajib agar mesh tidak penyok saat disikat.",
+                    "2. DRY: Sikat debu kering perlahan.",
+                    "3. WASH: Celup sikat lembut ke sabun All Purpose. Sikat perlahan SATU ARAH (One Way) mengikuti alur rajutan. Jangan memutar kasar.",
+                    "4. RINSE: Metode Bilas Khusus -> Semprot sedikit air (spray), lalu TEKAN-TEKAN (Dabbing) dengan handuk microfiber untuk menyedot air kotor keluar.",
+                    "5. WARNING: Jangan digosok (rubbing) dengan handuk. Cukup ditekan kuat.",
+                    "6. DRY: Jemur di tempat sirkulasi udara baik dengan Shoe Tree tetap terpasang."
+                ]
+            },
+            suede: {
+                title: "Material: Suede (Beludru Kasar)",
+                soap: "Premium Gentle / All Purpose",
+                tips: "Suede benci air! Gunakan teknik 'Low Moisture' (sedikit air). Jika suede basah kuyup, teksturnya akan mati (keras) setelah kering.",
+                tools: [
+                    "Suede Brush (Sikat Kawat Kuningan/Nylon Keras - Untuk Dry Clean)",
+                    "Premium Brush (Bulu Kuda - Untuk Cuci Basah)",
+                    "Suede Eraser (Penghapus Karet)",
+                    "Microfiber",
+                    "Rubber Brush (Sikat Karet - Untuk Finishing)"
+                ],
+                steps: [
+                    "1. DRY CLEAN: Gunakan Sikat Kawat (Suede Brush) saat kering untuk mengangkat debu dan menegakkan bulu (arah bolak-balik).",
+                    "2. ERASER: Gunakan Eraser untuk menghapus noda titik/spot hitam.",
+                    "3. WET CLEAN: Celup sikat bulu kuda ke sabun, KIBASKAN/PERAS sampai hampir kering (lembab saja).",
+                    "4. SCRUB: Sikat cepat dan ringan ke permukaan suede.",
+                    "5. WIPE: DETIK ITU JUGA langsung lap busa dengan microfiber. Jangan biarkan air meresap ke kulit.",
+                    "6. DRY: Keringkan angin-angin.",
+                    "7. REVIVE: Setelah kering, bulu suede akan tidur/keras. Sikat ulang dengan Sikat Karet/Kawat pelan-pelan untuk melembutkan kembali (Fluffing)."
+                ]
+            },
+            nubuck: {
+                title: "Material: Nubuck (Beludru Halus)",
+                soap: "Premium Gentle",
+                tips: "Nubuck lebih halus dari suede (bulu lebih pendek). Lebih mudah rusak jika kena air berlebih. Fokus pada penggunaan Eraser.",
+                tools: [
+                    "Premium Brush (Horsehair)",
+                    "Rubber Eraser (Penghapus Karet)",
+                    "Microfiber Towel"
+                ],
+                steps: [
+                    "1. DRY: Sikat debu kering dengan sikat lembut.",
+                    "2. ERASE: Gosok noda kotor dengan Rubber Eraser. Seringkali ini sudah cukup membersihkan 80% kotoran tanpa air.",
+                    "3. WET (Jika Perlu): Gunakan metode cuci basah minim air (seperti Suede).",
+                    "4. WIPE: Lap bersih segera.",
+                    "5. DRY: Angin-anginkan hingga kering."
+                ]
+            },
+            leather: {
+                title: "Material: Leather (Kulit Asli/Sintetis)",
+                soap: "Premium Gentle / All Purpose",
+                tips: "Musuh kulit adalah kekeringan. Setelah dicuci sabun, minyak alami kulit hilang. Wajib dikembalikan dengan Conditioner (Lotion).",
+                tools: [
+                    "Premium Brush (Horsehair)",
+                    "Microfiber Towel",
+                    "Spons (Opsional)",
+                    "Leather Balm / Mink Oil (Conditioner)"
+                ],
+                steps: [
+                    "1. PREP: Bersihkan debu kasar.",
+                    "2. WASH: Oleskan sabun ke sikat lembut atau spons.",
+                    "3. SCRUB: Gosok memutar secara merata. Kotoran di kulit biasanya hanya di permukaan, mudah hilang.",
+                    "4. WIPE: Lap sisa sabun hingga kesat dan kering.",
+                    "5. DRY: Tunggu kering sebentar (jangan dijemur panas).",
+                    "6. CONDITIONING: Oleskan Leather Balm tipis-tipis dengan tangan atau spons bersih. Gosok hingga mengkilap dan lentur."
+                ]
+            },
+            rubber: {
+                title: "Material: Rubber (Midsole/Outsole)",
+                soap: "Deep Clean (Concentrated)",
+                tips: "Bagian ini paling tahan banting. Boleh disikat kuat. Noda kuning oksidasi TIDAK BISA hilang dengan sabun, butuh Un-Yellowing (Sole Sauce).",
+                tools: [
+                    "Stiff Brush (Sikat Nylon Keras)",
+                    "Magic Sponge (Melamine Foam)",
+                    "Microfiber"
+                ],
+                steps: [
+                    "1. WASH: Basahi sikat keras, celup sabun Deep Clean.",
+                    "2. SCRUB: Sikat dengan tekanan kuat pada bagian karet midsole/outsole.",
+                    "3. RINSE: Bilas air mengalir (aman untuk bagian sol bawah).",
+                    "4. MAGIC SPONGE: Jika ada noda baret hitam yang tidak hilang disikat, basahi Magic Sponge dan gosok pelan.",
+                    "5. DRY: Lap kering."
+                ]
+            }
+        };
+
+        function selectMaterial(matKey) {
+            document.querySelectorAll('.material-card').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${matKey}`).classList.add('active');
+            const data = guideData[matKey];
+            document.getElementById('guide-title').innerText = data.title;
+            document.getElementById('guide-soap').innerText = data.soap;
+            document.getElementById('guide-tip').innerText = data.tips;
+            document.getElementById('guide-tools').innerHTML = data.tools.map(t => `<li class="flex items-center gap-2 text-sm"><i class="fa-solid fa-check text-green-500"></i> ${t}</li>`).join('');
+            document.getElementById('guide-steps').innerHTML = data.steps.map((s, i) => `<div class="flex gap-3"><div class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">${i+1}</div><p class="text-sm text-slate-700 leading-relaxed">${s}</p></div>`).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => { updateAllContent(); selectMaterial('canvas'); });
+    </script>
+</body>
+</html>
